@@ -1,0 +1,4 @@
+include code_tester/lib
+include code_tester/dependencies
+include requirements.txt
+include README.md
