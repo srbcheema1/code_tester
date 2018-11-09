@@ -97,7 +97,17 @@ class Code_tester:
                     Colour.print("first difference in line "+str(ret),Colour.PURPLE)
                     printed_output = False
                     if(len(output1.split('\n')) < 30 and len(output2.split('\n')) < 30):
-                        table_data = [[self.code1, self.code2],[output1,output2]]
+                        table_data = [['#',self.code1, self.code2]]
+                        output1 = output1.split('\n')
+                        output2 = output2.split('\n')
+                        l1 = len(output1)
+                        l2 = len(output2)
+                        for i in range(max(l1,l2)):
+                            o1,o2 = '',''
+                            if i < l1: o1 = output1[i]
+                            if i < l2: o2 = output2[i]
+                            table_data.append([str(i+1),o1,o2])
+
                         print(AsciiTable(table_data).table)
                         printed_output = True
 
@@ -136,15 +146,15 @@ class Code_tester:
     def compile_code(self,code):
         base,ext = code.split('.')
 
-        if not ext in ['c', 'cpp', 'java', 'py', 'rb', 'out']:
-            Colour.print('Supports only C, C++, Python, Java, Ruby and cpp-binary as of now.',Colour.RED)
-            sys.exit(1)
 
         if self.os == 'windows':
+            if not ext in ['c', 'cpp', 'java', 'py', 'rb','exe']:
+                Colour.print('Supports only C, C++, Python, Java, Ruby and cpp-binary as of now.',Colour.RED)
+                sys.exit(1)
             compiler = {
                 'py': None,
                 'rb': None,
-                'out': None,
+                'exe': None,
                 'c': 'gcc -DONLINE_JUDGE -o ' + base + '.tester',
                 'cpp': 'g++ -DONLINE_JUDGE -std=c++14 -o ' + base + '.tester',
                 'java': 'javac -d .'
@@ -168,6 +178,9 @@ class Code_tester:
             }[ext]
 
         else:
+            if not ext in ['c', 'cpp', 'java', 'py', 'rb', 'out']:
+                Colour.print('Supports only C, C++, Python, Java, Ruby and cpp-binary as of now.',Colour.RED)
+                sys.exit(1)
             compiler = {
                 'py': None,
                 'rb': None,
@@ -195,5 +208,4 @@ class Code_tester:
             }[ext]
 
         return execute_command
-
 

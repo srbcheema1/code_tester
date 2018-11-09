@@ -62,27 +62,21 @@ tested 500
 passed 500 testcases
 
 srb@srb-pc:$ code_tester wrong.cpp brute.cpp testgen.py
-
+Difference detected in outputs
 ---------Failed Test Case----------
-10 19 10
-1 0 1 0 1 0 0 0 1 1
-??!?!!!???!?!!!??!!
+10 11 4
+1 0 0 0 0 0 0 1 1 1
+!?!!?!?!!!!
 
 ---------End of Test Case----------
-+-----------+-----------+
-| wrong.cpp | brute.cpp |
-+-----------+-----------+
-| 2         | 2         |
-| 2         | 2         |
-| 1         | 2         |
-| 2         | 3         |
-| 2         | 3         |
-| 2         | 3         |
-| 3         | 3         |
-| 2         | 3         |
-| 2         | 3         |
-+-----------+-----------+
-
+first difference in line 3
++---+-----------+-----------+
+| # | wrong.cpp | brute.cpp |
++---+-----------+-----------+
+| 1 | 2         | 2         |
+| 2 | 4         | 4         |
+| 3 | 3         | 4         |
++---+-----------+-----------+
 
 ```
 
@@ -97,33 +91,34 @@ srb@srb-pc:$ code_tester wrong.cpp brute.cpp testgen.py
 Difference detected in outputs
 ---------Failed Test Case----------
 10
-7 6
-5 13
-9 19
-19 13
-13 1
-16 4
-9 3
-9 13
-18 14
-5 20
+5 1
+13 9
+15 2
+11 10
+16 2
+18 9
+17 16
+13 2
+16 16
+19 16
 
 ---------End of Test Case----------
-first difference in line 7
-+-------------+-----------+
-| wrong.cpp   | brute.cpp |
-+-------------+-----------+
-| 1.00000000  | 1         |    it will detect values are same in 1.0, 1.000 and 1
-| 1.00000000  | 1         |
-| 1.00000000  | 1         |
-| 1.00000000  | 1         |
-| 0.14285714  | 0.1428571 |    this line is not marked as diff(smart to detect negligible change)
-| 1.00000000  | 1         |
-| 1.00000000  | 0.5000000 |    this one is 7th line which actually differs
-| 1.00000000  | 1         |
-| 1.00000000  | 1         |
-| 1.00000000  | 1         |
-+-------------+-----------+
+first difference in line 8
++----+-------------+-----------+
+| #  | wrong.cpp   | brute.cpp |
++----+-------------+-----------+
+| 1  | 0.33333333  | 0.3333333 |    ignore percision differences smaller than 1e-6
+| 2  | 1.00000000  | 1         |    it will detect values are same in 1.0, 1.000 and 1
+| 3  | 0.25000000  | 0.2500000 |
+| 4  | 1.00000000  | 1         |
+| 5  | 0.25000000  | 0.2500000 |
+| 6  | 1.00000000  | 1         |
+| 7  | 0.14285714  | 0.1428571 |    this line is not marked as diff(smart to detect negligible change)
+| 8  | 0.33333333  | 0.2500000 |    this one is 7th line which actually differs
+| 9  | 1.00000000  | 1         |
+| 10 | 1.00000000  | 1         |
++----+-------------+-----------+
+
 ```
 
 ### Supported Languages
