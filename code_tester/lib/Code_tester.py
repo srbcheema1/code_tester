@@ -1,9 +1,11 @@
 import os
+import platform
 import sys
 from sys import argv,exit
 from terminaltables import AsciiTable
 
 from .srbColour import Colour
+from .util import Util
 
 class Code_tester:
     def __init__(self,code1,code2,tester_script,maxlim = 10000,idd="0",timeout = "10"):
@@ -20,10 +22,15 @@ class Code_tester:
         self.maxlim = int(maxlim)
         if not Code_tester.check_exception(code1,code2,tester_script):
             sys.exit(0)
-        self.exec1 = Code_tester.compile_code(self.code1)
-        self.exec2 = Code_tester.compile_code(self.code2)
-        self.exec3 = Code_tester.compile_code(self.tester_script)
-        self.timeout = 'timeout ' + str(timeout) + 's '
+
+        self.os = Util.get_os_name()
+        self.exec1 = self.compile_code(self.code1)
+        self.exec2 = self.compile_code(self.code2)
+        self.exec3 = self.compile_code(self.tester_script)
+        if self.os == 'windows':
+            self.timeout = ''
+        else:
+            self.timeout = 'timeout ' + str(timeout) + 's '
 
     def check_exception(file1,file2,tester_script):
         if(not os.path.exists(file1)):
@@ -117,40 +124,66 @@ class Code_tester:
                 [line.strip() for line in output])
             return output
 
-
-    @staticmethod
-    def compile_code(code):
+    def compile_code(self,code):
         base,ext = code.split('.')
 
         if not ext in ['c', 'cpp', 'java', 'py', 'rb', 'out']:
             Colour.print('Supports only C, C++, Python, Java, Ruby and cpp-binary as of now.',Colour.RED)
             sys.exit(1)
 
-        compiler = {
-            'py': None,
-            'rb': None,
-            'out': None,
-            'c': 'gcc -static -DONLINE_JUDGE -g -fno-asm -lm -s -O2 -o ' + base + '.tester',
-            'cpp': 'g++ -static -DONLINE_JUDGE -g -lm -s -x c++ -O2 -std=c++14 -o ' + base + '.tester',
-            'java': 'javac -d .'
-        }[ext]
+        if self.os == 'windows':
+            compiler = {
+                'py': None,
+                'rb': None,
+                'out': None,
+                'c': 'gcc -DONLINE_JUDGE -o ' + base + '.tester',
+                'cpp': 'g++ -DONLINE_JUDGE -std=c++14 -o ' + base + '.tester',
+                'java': 'javac -d .'
+            }[ext]
 
-        # COMPILE
-        if not compiler is None:
-            compile_status = os.system(compiler + ' \'' + code + '\'') #spaces in path
-            if compile_status != 0:
-                Colour.print('Compilation error.', Colour.RED)
-                os.system(self.compiler + ' \'' + self.input_file + '\'') #spaces in path
-                sys.exit(1)
+            # COMPILE
+            if not compiler is None:
+                compile_status = os.system(compiler + ' "' + code + '"') #spaces in path
+                if compile_status != 0:
+                    Colour.print('Compilation error.', Colour.RED)
+                    os.system(compiler + ' "' + code + '"') #spaces in path
+                    sys.exit(1)
 
-        execute_command = {
-            'py': 'python3 \'' + code + '\'',
-            'rb': 'ruby \'' + code + '\'',
-            'out': './' + base + '.out',
-            'c': './' + base + '.tester',
-            'cpp': './' + base + '.tester',
-            'java': 'java -DONLINE_JUDGE=true -Duser.language=en -Duser.region=US -Duser.variant=US ' + base
-        }[ext]
+            execute_command = {
+                'py': 'python "' + code + '"',
+                'rb': 'ruby "' + code + '"',
+                'exe': '' + base + '.exe',
+                'c': '' + base + '.tester',
+                'cpp': '' + base + '.tester',
+                'java': 'java -DONLINE_JUDGE=true -Duser.language=en -Duser.region=US -Duser.variant=US ' + base
+            }[ext]
+
+        else:
+            compiler = {
+                'py': None,
+                'rb': None,
+                'out': None,
+                'c': 'gcc -static -DONLINE_JUDGE -g -fno-asm -lm -s -O2 -o ' + base + '.tester',
+                'cpp': 'g++ -static -DONLINE_JUDGE -g -lm -s -x c++ -O2 -std=c++14 -o ' + base + '.tester',
+                'java': 'javac -d .'
+            }[ext]
+
+            # COMPILE
+            if not compiler is None:
+                compile_status = os.system(compiler + ' \'' + code + '\'') #spaces in path
+                if compile_status != 0:
+                    Colour.print('Compilation error.', Colour.RED)
+                    os.system(compiler + ' \'' + code + '\'') #spaces in path
+                    sys.exit(1)
+
+            execute_command = {
+                'py': 'python3 \'' + code + '\'',
+                'rb': 'ruby \'' + code + '\'',
+                'out': './' + base + '.out',
+                'c': './' + base + '.tester',
+                'cpp': './' + base + '.tester',
+                'java': 'java -DONLINE_JUDGE=true -Duser.language=en -Duser.region=US -Duser.variant=US ' + base
+            }[ext]
 
         return execute_command
 

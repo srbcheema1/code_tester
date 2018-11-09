@@ -17,12 +17,18 @@ Code_tester is a command-line code testing tool used to test your codes against 
 
 #### Install using pip
 
+##### linux and mac users
 ```
 sudo python3 -m pip install code_tester
 ```
 you may use `--user` option to install locally for user only in `~/.local/bin`
 don't forget `~/.local/bin` should be in your `PATH`. Add line `export PATH=$PATH="~/.local/bin"` in your `.bashrc`
 
+##### windows users
+for windows users you should have python3 installed in your system
+```
+pip install code_tester
+```
 ### Usage
 
 ```

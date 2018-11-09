@@ -1,3 +1,5 @@
+import platform
+
 class Colour:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
@@ -40,4 +42,21 @@ class Colour:
     FULLWHITE = '\033[107m'
 
     def print(mesage,colour='',end='\n'):
-        print(colour + mesage + Colour.END,end=end)
+        os_name = Colour.__get_os_name()
+        end_colour = Colour.END
+        if(os_name == 'windows'):
+            colour = ''
+            end_colour = ''
+        print(colour + mesage + end_colour,end=end)
+
+    @staticmethod
+    def __get_os_name():
+        os_name = platform.system().lower()
+        if 'window' in os_name:
+            return 'windows'
+        if 'darwin' in os_name:
+            return 'mac'
+        if 'linux' in os_name:
+            return 'linux'
+        return None
+
