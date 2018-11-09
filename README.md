@@ -2,6 +2,7 @@
 
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.ocm/srbcheema1/code_tester/issues)
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)](https://github.com/srbcheema1/code_tester)
+[![Build Status](https://travis-ci.org/srbcheema1/code_tester.svg?branch=master)](https://travis-ci.org/srbcheema1/code_tester)
 [![HitCount](http://hits.dwyl.io/srbcheema1/code_tester.svg)](http://hits.dwyl.io/srbcheema1/code_tester)
 
 Code_tester is a command-line code testing tool used to test your codes against codes of your friends/brute-force code.

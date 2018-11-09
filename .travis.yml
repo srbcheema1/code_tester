@@ -2,20 +2,30 @@ language: python
 python:
     - '3.5'
 
+dist: trusty
 sudo: true
+compiler: g++
+install: export CXX="g++-6"
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-6
 
-matrix:
-    - os: linux
-      env:
-      global:
-          - HELLO='hello world'
-          #- PIP_INSTALL="pip3 install"
+before_script:
+  - sudo ln -sf /usr/bin/g++-6 /usr/bin/g++
+  - python3 -m pip install pytest
+  - python3 -m pip install setuptools
+  - tail -n3 ~/.bashrc
 
 
 script:
-  #- "$PIP_INSTALL" pytest
-  - python3 -m pip install setuptools
   - python3 setup.py sdist bdist
   - python3 setup.py install
-  - medipack --help
+  - code_tester --help
   - pytest
+  - cd test/input_files
+  - code_tester -f wrong.cpp -o code.cpp -t testgen.py
+  - code_tester -c
+  - cd -
