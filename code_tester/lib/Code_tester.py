@@ -6,6 +6,7 @@ from terminaltables import AsciiTable
 
 from .srbColour import Colour
 from .util import Util
+from .comp_files import comp_files
 
 class Code_tester:
     def __init__(self,code1,code2,tester_script,maxlim = 10000,idd="0",timeout = "10"):
@@ -82,21 +83,29 @@ class Code_tester:
                 output2 = Code_tester.get_ouput(self.out2)
                 failed_test = Code_tester.get_ouput('tester_case'+self.idd)
 
-                if output1 != output2:
+                ret,size_diff = comp_files(self.out1,self.out2)
+                if size_diff:
+                    Colour.print('Output files differ in size',Colour.PURPLE)
+                if ret > -1 or size_diff:
+                    Colour.print('Difference detected in outputs',Colour.PURPLE)
                     if(len(failed_test.split('\n')) < 30):
                         Colour.print('---------Failed Test Case----------',Colour.YELLOW)
                         print(failed_test)
                         Colour.print('')
                         Colour.print('---------End of Test Case----------',Colour.YELLOW)
 
+                    Colour.print("first difference in line "+str(ret),Colour.PURPLE)
+                    printed_output = False
                     if(len(output1.split('\n')) < 30 and len(output2.split('\n')) < 30):
                         table_data = [[self.code1, self.code2],[output1,output2]]
                         print(AsciiTable(table_data).table)
+                        printed_output = True
 
-                    from comp_files import comp_files as comparer
-                    ret = comparer(self.out1,self.out2)
-                    if(ret!=-1):
-                        Colour.print("diff in line "+str(ret),Colour.YELLOW)
+                    if(not printed_output):
+                        if(len(output1.split('\n')) > ret and len(output2.split('\n')) > ret):
+                            table_data = [[self.code1, self.code2],
+                                    [output1.split('\n')[ret],output2].split('\n')[ret]]
+                            print(AsciiTable(table_data).table)
 
                     # git diff
 

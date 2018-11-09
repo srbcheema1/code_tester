@@ -86,6 +86,45 @@ srb@srb-pc:$ code_tester wrong.cpp brute.cpp testgen.py
 
 ```
 
+#### Smart enough
+
+- smart enough to detect that `1` is same as `1.0`
+- able to detect and ignore difference of less than 1e-6 in float values
+- able to ignore trailing white spaces
+
+```
+srb@srb-pc:$ code_tester wrong.cpp brute.cpp testgen.py
+Difference detected in outputs
+---------Failed Test Case----------
+10
+7 6
+5 13
+9 19
+19 13
+13 1
+16 4
+9 3
+9 13
+18 14
+5 20
+
+---------End of Test Case----------
+first difference in line 7
++-------------+-----------+
+| wrong.cpp   | brute.cpp |
++-------------+-----------+
+| 1.00000000  | 1         |    it will detect values are same in 1.0, 1.000 and 1
+| 1.00000000  | 1         |
+| 1.00000000  | 1         |
+| 1.00000000  | 1         |
+| 0.14285714  | 0.1428571 |    this line is not marked as diff(smart to detect negligible change)
+| 1.00000000  | 1         |
+| 1.00000000  | 0.5000000 |    this one is 7th line which actually differs
+| 1.00000000  | 1         |
+| 1.00000000  | 1         |
+| 1.00000000  | 1         |
++-------------+-----------+
+```
 
 ### Supported Languages
 
