@@ -22,8 +22,8 @@ class Code_tester:
         self.code2 = code2
         self.base1 = code1.split('/')[-1].split('\\')[-1].split('.')[0]
         self.base2 = code2.split('/')[-1].split('\\')[-1].split('.')[0]
-        self.out1 = self.base1+self.idd+'_tester'
-        self.out2 = self.base2+self.idd+'_tester'
+        self.out1 = '.'+self.base1+self.idd+'.tester'
+        self.out2 = '.'+self.base2+self.idd+'.tester'
 
         self.tester_script = tester_script
         self.maxlim = int(maxlim)
@@ -56,7 +56,7 @@ class Code_tester:
                 elif(times%10==0):
                     Colour.print("tested "+str(times),Colour.GREEN,end='\r')
 
-                status = os.system(self.timeout + self.exec3 + ' > tester_case' + self.idd) # tester_exec
+                status = os.system(self.timeout + self.exec3 + ' > .case' + self.idd + '.tester') # tester_exec
                 if status == 31744:
                     Colour.print('test_gen timed out',Colour.RED)
                     sys.exit(1)
@@ -64,7 +64,7 @@ class Code_tester:
                     Colour.print('test_gen runtime_error',Colour.RED)
                     sys.exit(1)
 
-                status = os.system(self.timeout + self.exec1 + ' < tester_case' + self.idd + ' > ' + self.out1)
+                status = os.system(self.timeout + self.exec1 + ' < .case' + self.idd + '.tester > ' + self.out1)
                 if status == 31744:
                     Colour.print(self.code1 + ' timed out',Colour.RED)
                     sys.exit(1)
@@ -72,17 +72,18 @@ class Code_tester:
                     Colour.print(self.code1 + ' runtime_error',Colour.RED)
                     sys.exit(1)
 
-                status = os.system(self.timeout + self.exec2 + ' < tester_case' + self.idd + ' > ' + self.out2)
+                status = os.system(self.timeout + self.exec2 + ' < .case' + self.idd + '.tester > ' + self.out2)
                 if status == 31744:
                     Colour.print(self.code2 + ' timed out',Colour.RED)
                     sys.exit(1)
                 if status != 0:
+                    time.sleep(0.5)
                     Colour.print(self.code2 + ' runtime_error',Colour.RED)
                     sys.exit(1)
 
                 output1 = Code_tester.get_ouput(self.out1)
                 output2 = Code_tester.get_ouput(self.out2)
-                failed_test = Code_tester.get_ouput('tester_case'+self.idd)
+                failed_test = Code_tester.get_ouput('.case'+self.idd+'.tester')
 
                 ret,size_diff = comp_files(self.out1,self.out2)
                 if size_diff:
@@ -132,9 +133,7 @@ class Code_tester:
 
     @staticmethod
     def clean():
-        os.system("rm tester_case*") # testcase
-        os.system('rm *.tester') # executables
-        os.system('rm *_tester') # outputs
+        os.system('rm .*.tester') # tester files clean
 
     @staticmethod
     def get_ouput(file_path):
@@ -156,8 +155,8 @@ class Code_tester:
                 'py': None,
                 'rb': None,
                 'exe': None,
-                'c': 'gcc -DONLINE_JUDGE -o ' + base + '.tester',
-                'cpp': 'g++ -DONLINE_JUDGE -std=c++14 -o ' + base + '.tester',
+                'c': 'gcc -DONLINE_JUDGE -o .' + base + '.tester',
+                'cpp': 'g++ -DONLINE_JUDGE -std=c++14 -o .' + base + '.tester',
                 'java': 'javac -d .'
             }[ext]
 
@@ -172,9 +171,9 @@ class Code_tester:
             execute_command = {
                 'py': 'python "' + code + '"',
                 'rb': 'ruby "' + code + '"',
-                'exe': '' + base + '.exe',
-                'c': '' + base + '.tester',
-                'cpp': '' + base + '.tester',
+                'exe': code,
+                'c': '.' + base + '.tester',
+                'cpp': '.' + base + '.tester',
                 'java': 'java -DONLINE_JUDGE=true -Duser.language=en -Duser.region=US -Duser.variant=US ' + base
             }[ext]
 
@@ -186,8 +185,8 @@ class Code_tester:
                 'py': None,
                 'rb': None,
                 'out': None,
-                'c': 'gcc -static -DONLINE_JUDGE -g -fno-asm -lm -s -O2 -o ' + base + '.tester',
-                'cpp': 'g++ -static -DONLINE_JUDGE -g -lm -s -x c++ -O2 -std=c++14 -o ' + base + '.tester',
+                'c': 'gcc -static -DONLINE_JUDGE -g -fno-asm -lm -s -O2 -o .' + base + '.tester',
+                'cpp': 'g++ -static -DONLINE_JUDGE -g -lm -s -x c++ -O2 -std=c++14 -o .' + base + '.tester',
                 'java': 'javac -d .'
             }[ext]
 
@@ -202,9 +201,9 @@ class Code_tester:
             execute_command = {
                 'py': 'python3 \'' + code + '\'',
                 'rb': 'ruby \'' + code + '\'',
-                'out': './' + base + '.out',
-                'c': './' + base + '.tester',
-                'cpp': './' + base + '.tester',
+                'out': './' + code,
+                'c': './.' + base + '.tester',
+                'cpp': './.' + base + '.tester',
                 'java': 'java -DONLINE_JUDGE=true -Duser.language=en -Duser.region=US -Duser.variant=US ' + base
             }[ext]
 

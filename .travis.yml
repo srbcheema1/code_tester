@@ -25,7 +25,7 @@ script:
   - python3 setup.py install
   - code_tester --help
   - pytest
-  - cd test/input_files
-  - code_tester -f wrong.cpp -o code.cpp -t testgen.py
+  - code_tester test/input_files/wrong.cpp test/input_files/code.cpp -t test/input_files/testgen.py -n 200
+  - ls -d .?*
   - code_tester -c
-  - cd -
+  - ls -d .?*
