@@ -12,10 +12,16 @@ class Code_tester:
     def __init__(self,code1,code2,tester_script,maxlim = 10000,idd="0",timeout = "10"):
         self.idd = '_' + str(idd)
 
+        self.os = Util.get_os_name()
+        if self.os == 'windows':
+            self.timeout = ''
+        else:
+            self.timeout = 'timeout ' + str(timeout) + 's '
+
         self.code1 = code1
         self.code2 = code2
-        self.base1 = code1.split('.')[0]
-        self.base2 = code2.split('.')[0]
+        self.base1 = code1.split('/')[-1].split('\\')[-1].split('.')[0]
+        self.base2 = code2.split('/')[-1].split('\\')[-1].split('.')[0]
         self.out1 = self.base1+self.idd+'_tester'
         self.out2 = self.base2+self.idd+'_tester'
 
@@ -24,14 +30,9 @@ class Code_tester:
         if not Code_tester.check_exception(code1,code2,tester_script):
             sys.exit(0)
 
-        self.os = Util.get_os_name()
         self.exec1 = self.compile_code(self.code1)
         self.exec2 = self.compile_code(self.code2)
         self.exec3 = self.compile_code(self.tester_script)
-        if self.os == 'windows':
-            self.timeout = ''
-        else:
-            self.timeout = 'timeout ' + str(timeout) + 's '
 
     def check_exception(file1,file2,tester_script):
         if(not os.path.exists(file1)):
@@ -144,7 +145,7 @@ class Code_tester:
             return output
 
     def compile_code(self,code):
-        base,ext = code.split('.')
+        base,ext = code.split('\\')[-1].split('/')[-1].split('.')
 
 
         if self.os == 'windows':
