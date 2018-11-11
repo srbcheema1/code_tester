@@ -1,4 +1,5 @@
 import platform
+import sys
 
 class Colour:
     BOLD = '\033[1m'
@@ -41,13 +42,14 @@ class Colour:
     FULLCYAN = '\033[106m'
     FULLWHITE = '\033[107m'
 
-    def print(mesage,colour='',end='\n'):
+    def print(message,colour='',end='\n'):
         os_name = Colour.__get_os_name()
         end_colour = Colour.END
         if(os_name == 'windows'):
             colour = ''
             end_colour = ''
-        print(colour + mesage + end_colour,end=end)
+        # print(colour + message + end_colour,end=end)
+        sys.stderr.write(colour + message + end_colour + end)
 
     @staticmethod
     def __get_os_name():
