@@ -3,6 +3,7 @@ import platform
 import sys
 from sys import argv,exit
 from terminaltables import AsciiTable
+import subprocess as sp
 
 from .srbColour import Colour
 from .util import Util
@@ -56,80 +57,105 @@ class Code_tester:
                 elif(times%10==0):
                     Colour.print("tested "+str(times),Colour.GREEN,end='\r')
 
-                status = os.system(self.timeout + self.exec3 + ' > .case' + self.idd + '.tester') # tester_exec
-                if status == 31744:
+                p = sp.Popen(self.timeout + self.exec3 + ' > .case' + self.idd + '.tester',shell=True)
+                p.wait()
+                status = p.returncode
+                if status == 124:
                     Colour.print('test_gen timed out',Colour.RED)
-                    sys.exit(1)
+                    sys.exit(0)
                 if status != 0:
                     Colour.print('test_gen runtime_error',Colour.RED)
-                    sys.exit(1)
+                    sys.exit(0)
 
-                status = os.system(self.timeout + self.exec1 + ' < .case' + self.idd + '.tester > ' + self.out1)
-                if status == 31744:
+                p = sp.Popen(self.timeout + self.exec1 + ' < .case'+self.idd+'.tester > ' + self.out1,shell=True)
+                p.wait()
+                status = p.returncode
+                if status == 124:
                     Colour.print(self.code1 + ' timed out',Colour.RED)
-                    sys.exit(1)
+                    self.print_failed_test()
+                    sys.exit(0)
                 if status != 0:
                     Colour.print(self.code1 + ' runtime_error',Colour.RED)
-                    sys.exit(1)
+                    self.print_failed_test()
+                    sys.exit(0)
 
-                status = os.system(self.timeout + self.exec2 + ' < .case' + self.idd + '.tester > ' + self.out2)
-                if status == 31744:
+                p = sp.Popen(self.timeout + self.exec2 + ' < .case'+self.idd+'.tester > ' + self.out2,shell=True)
+                p.wait()
+                status = p.returncode
+                if status == 124:
                     Colour.print(self.code2 + ' timed out',Colour.RED)
-                    sys.exit(1)
+                    self.print_failed_test()
+                    sys.exit(0)
                 if status != 0:
-                    time.sleep(0.5)
                     Colour.print(self.code2 + ' runtime_error',Colour.RED)
-                    sys.exit(1)
+                    self.print_failed_test()
+                    sys.exit(0)
+
 
                 output1 = Code_tester.get_ouput(self.out1)
                 output2 = Code_tester.get_ouput(self.out2)
-                failed_test = Code_tester.get_ouput('.case'+self.idd+'.tester')
 
                 ret,size_diff = comp_files(self.out1,self.out2)
                 if size_diff:
                     Colour.print('Output files differ in size',Colour.PURPLE)
                 if ret > -1 or size_diff:
                     Colour.print('Difference detected in outputs',Colour.PURPLE)
-                    if(len(failed_test.split('\n')) < 30):
-                        Colour.print('---------Failed Test Case----------',Colour.YELLOW)
-                        print(failed_test)
-                        Colour.print('')
-                        Colour.print('---------End of Test Case----------',Colour.YELLOW)
-
+                    self.print_failed_test()
                     Colour.print("first difference in line "+str(ret),Colour.PURPLE)
-                    printed_output = False
-                    if(len(output1.split('\n')) < 30 and len(output2.split('\n')) < 30):
-                        table_data = [['#',self.code1, self.code2]]
-                        output1 = output1.split('\n')
-                        output2 = output2.split('\n')
-                        l1 = len(output1)
-                        l2 = len(output2)
-                        for i in range(max(l1,l2)):
-                            o1,o2 = '',''
-                            if i < l1: o1 = output1[i]
-                            if i < l2: o2 = output2[i]
-                            table_data.append([str(i+1),o1,o2])
-
-                        print(AsciiTable(table_data).table)
-                        printed_output = True
-
-                    if(not printed_output):
-                        if(len(output1.split('\n')) > ret and len(output2.split('\n')) > ret):
-                            table_data = [[self.code1, self.code2],
-                                    [output1.split('\n')[ret],output2].split('\n')[ret]]
-                            print(AsciiTable(table_data).table)
-
-                    # git diff
-
+                    self.print_outputs(output1,output2,ret)
+                    self.git_diff()
                     sys.exit(0)
 
                 times += 1
                 if(self.maxlim > 0 and times>self.maxlim):
                     Colour.print("passed "+str(self.maxlim)+" testcases ",Colour.GREEN)
                     break
+
         except KeyboardInterrupt:
             Colour.print("tested "+str(times),Colour.GREEN)
             Colour.print('exiting safely',Colour.GREEN)
+
+
+    def print_failed_test(self):
+        failed_test = Code_tester.get_ouput('.case'+self.idd+'.tester')
+        if(len(failed_test.split('\n')) < 30):
+            Colour.print('---------Failed Test Case----------',Colour.YELLOW)
+            print(failed_test)
+            Colour.print('')
+            Colour.print('---------End of Test Case----------',Colour.YELLOW)
+        else:
+            Colour.print('Testcase file having more than 30 lines',Colour.YELLOW)
+
+    def git_diff(self):
+        '''
+        TODO: to be implemented
+        '''
+        return
+
+    def print_outputs(self,output1,output2,ret):
+        printed_output = False
+        if(len(output1.split('\n')) < 30 and len(output2.split('\n')) < 30):
+            table_data = [['#',self.code1, self.code2]]
+            output1 = output1.split('\n')
+            output2 = output2.split('\n')
+            l1 = len(output1)
+            l2 = len(output2)
+            for i in range(max(l1,l2)):
+                o1,o2 = '',''
+                if i < l1: o1 = output1[i]
+                if i < l2: o2 = output2[i]
+                table_data.append([str(i+1),o1,o2])
+
+            print(AsciiTable(table_data).table)
+            printed_output = True
+
+        if(not printed_output):
+            # Only print the bad line
+            if(len(output1.split('\n')) > ret and len(output2.split('\n')) > ret):
+                table_data = [[self.code1, self.code2],
+                        [output1.split('\n')[ret],output2].split('\n')[ret]]
+                print(AsciiTable(table_data).table)
+
 
     @staticmethod
     def clean():
