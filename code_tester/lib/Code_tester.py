@@ -153,7 +153,7 @@ class Code_tester:
             # Only print the bad line
             if(len(output1.split('\n')) > ret and len(output2.split('\n')) > ret):
                 table_data = [[self.code1, self.code2],
-                        [output1.split('\n')[ret],output2].split('\n')[ret]]
+                        [output1.split('\n')[ret-1], output2.split('\n')[ret-1]]]
                 print(AsciiTable(table_data).table)
 
 
