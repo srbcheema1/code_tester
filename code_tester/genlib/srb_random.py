@@ -3,6 +3,9 @@ from random import randint as randd
 # A function to generate a random permutation of arr[]
 def randomize(arr):
     n = len(arr)
+    for i in range(0,n-1):
+        j = randint(i,n-1)
+        arr[i],arr[j] = arr[j],arr[i]
     for i in range(n-1,0,-1):
         j = rand(0,i)
         arr[i],arr[j] = arr[j],arr[i]

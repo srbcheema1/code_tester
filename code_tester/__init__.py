@@ -7,5 +7,5 @@ so that we can include things like
 from code_tester import rand
 
 """
-from .genlib.ramdom import *
+from .genlib.srb_random import *
 from .genlib.srbIo import *
