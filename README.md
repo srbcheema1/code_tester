@@ -22,7 +22,7 @@ Code_tester is a command-line code testing tool used to test your codes against 
 ```
 python3 -m pip install --user code_tester
 ```
-Don't forget `~/.local/bin` should be in your `PATH`. Add line `export PATH=$PATH="~/.local/bin"` in your `.bashrc`
+Don't forget `~/.local/bin` should be in your `PATH`. Add line `export PATH=$PATH:"~/.local/bin"` in your `~/.bashrc`
 
 ##### windows users
 for windows users you should have python3 installed in your system
