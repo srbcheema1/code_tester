@@ -1,19 +1,16 @@
 import os
 import sys
 
+from srblib import Colour
+from srblib import show_dependency_error_and_exit
+
 try:
     import argparse
     from argcomplete import autocomplete
 except:
-    err = """
-    You haven't installed the required dependencies.
-    """
-    print(err)
-    sys.exit(0)
+    show_dependency_error_and_exit()
 
-from .srbColour import Colour
-from .. import __version__
-
+from .. import __version__, __mod_name__
 
 class Args:
     def verify_file(file_path):
@@ -92,7 +89,7 @@ class Args:
         autocomplete(parser)
         parsed_args = parser.parse_args()
         if(parsed_args.version):
-            print('code_tester=='+__version__)
-            sys.exit()
+            print(__mod_name__+'=='+__version__)
+            sys.exit(0)
         Args.validate_args(parsed_args)
         return parsed_args

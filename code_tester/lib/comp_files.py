@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-#code to compare 2 files
-#print first line in which there is difference
-
-from sys import argv,exit
-import os
-
-
 def _check_ints(a,b):
     try:
         a,b = int(a),int(b)

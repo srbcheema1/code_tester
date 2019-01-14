@@ -4,10 +4,8 @@
 
 import os
 import sys
-from terminaltables import AsciiTable
 
 from .lib.args import Args
-from .lib.srbColour import Colour
 from .lib.Code_tester import Code_tester
 
 describe='''

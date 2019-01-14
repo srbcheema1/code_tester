@@ -1,19 +1,18 @@
 import os
-import platform
 import sys
-from sys import argv,exit
-from terminaltables import AsciiTable
 import subprocess as sp
 
-from .srbColour import Colour
-from .util import Util
+from srblib import Colour
+from srblib import Tabular
+from srblib import get_os_name
+
 from .comp_files import comp_files
 
 class Code_tester:
     def __init__(self,code1,code2,tester_script,maxlim = 10000,idd="0",timeout = "10"):
         self.idd = '_' + str(idd)
 
-        self.os = Util.get_os_name()
+        self.os = get_os_name()
         if self.os == 'windows':
             self.timeout = ''
         else:
@@ -146,7 +145,7 @@ class Code_tester:
                 if i < l2: o2 = output2[i]
                 table_data.append([str(i+1),o1,o2])
 
-            print(AsciiTable(table_data).table)
+            print(Tabular(table_data))
             printed_output = True
 
         if(not printed_output):
@@ -154,7 +153,7 @@ class Code_tester:
             if(len(output1.split('\n')) > ret and len(output2.split('\n')) > ret):
                 table_data = [[self.code1, self.code2],
                         [output1.split('\n')[ret-1], output2.split('\n')[ret-1]]]
-                print(AsciiTable(table_data).table)
+                print(Tabular(table_data))
 
 
     @staticmethod
