@@ -9,3 +9,5 @@ from code_tester import rand
 """
 from .genlib.srb_random import *
 from .genlib.srbIo import *
+
+from .lib.comp_files import comp_files
