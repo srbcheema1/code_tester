@@ -1,4 +1,4 @@
 - add gifs
 - verifier script option
 - add library for test_case generators
-- test with a given test-case
+- use `from srblib import dump_output`

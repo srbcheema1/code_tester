@@ -178,11 +178,12 @@ class Code_tester:
         binary = '.'+'-'.join(relative_path(code).split('/')[1:])+'.tester'
 
         if os_name == 'windows':
-            if not ext in ['c', 'cpp', 'java', 'py', 'rb','exe']:
+            if not ext in ['c', 'cpp', 'java', 'py', 'rb','exe', 'txt']:
                 Colour.print('Supports only C, C++, Python, Java, Ruby and cpp-binary as of now.',Colour.RED)
                 sys.exit(1)
 
             compiler = {
+                'txt':None,
                 'py': None,
                 'rb': None,
                 'exe': None,
@@ -200,6 +201,7 @@ class Code_tester:
                     sys.exit(1)
 
             execute_command = {
+                'txt':'type "' + code + '"',
                 'py': 'python "' + code + '"',
                 'rb': 'ruby "' + code + '"',
                 'exe': code,
@@ -209,10 +211,11 @@ class Code_tester:
             }[ext]
 
         else: # Not windows
-            if not ext in ['c', 'cpp', 'java', 'py', 'rb', 'out']:
+            if not ext in ['c', 'cpp', 'java', 'py', 'rb', 'out', 'txt']:
                 Colour.print('Supports only C, C++, Python, Java, Ruby and cpp-binary as of now.',Colour.RED)
                 sys.exit(1)
             compiler = {
+                'txt': None,
                 'py': None,
                 'rb': None,
                 'out': None,
@@ -230,6 +233,7 @@ class Code_tester:
                     sys.exit(1)
 
             execute_command = {
+                'txt':'cat "' + code + '"',
                 'py': 'python3 \'' + code + '\'',
                 'rb': 'ruby \'' + code + '\'',
                 'out': './' + code,
