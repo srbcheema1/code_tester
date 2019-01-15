@@ -5,25 +5,30 @@ import subprocess as sp
 from srblib import Colour
 from srblib import Tabular
 from srblib import get_os_name
+from srblib import abs_path, relative_path
 
 from .comp_files import comp_files
 
+os_name = get_os_name()
 class Code_tester:
     def __init__(self,code1,code2,tester_script,maxlim = 10000,idd="0",timeout = "10"):
         self.idd = '_' + str(idd)
 
-        self.os = get_os_name()
-        if self.os == 'windows':
+        if os_name == 'windows':
             self.timeout = ''
         else:
             self.timeout = 'timeout ' + str(timeout) + 's '
+
+        code1 = abs_path(code1)
+        code2 = abs_path(code2)
+        tester_script = abs_path(tester_script)
 
         self.code1 = code1
         self.code2 = code2
         self.base1 = code1.split('/')[-1].split('\\')[-1].split('.')[0]
         self.base2 = code2.split('/')[-1].split('\\')[-1].split('.')[0]
-        self.out1 = '.'+self.base1+self.idd+'.tester'
-        self.out2 = '.'+self.base2+self.idd+'.tester'
+        self.out1 = '.'+'-'.join(relative_path(code1).split('/')[1:])+self.idd+'.tester'
+        self.out2 = '.'+'-'.join(relative_path(code2).split('/')[1:])+self.idd+'.tester'
 
         self.tester_script = tester_script
         self.maxlim = int(maxlim)
@@ -91,8 +96,8 @@ class Code_tester:
                     sys.exit(0)
 
 
-                output1 = Code_tester.get_ouput(self.out1)
-                output2 = Code_tester.get_ouput(self.out2)
+                output1 = Code_tester.get_output(self.out1)
+                output2 = Code_tester.get_output(self.out2)
 
                 ret,size_diff = comp_files(self.out1,self.out2)
                 if size_diff:
@@ -116,7 +121,7 @@ class Code_tester:
 
 
     def print_failed_test(self):
-        failed_test = Code_tester.get_ouput('.case'+self.idd+'.tester')
+        failed_test = Code_tester.get_output('.case'+self.idd+'.tester')
         if(len(failed_test.split('\n')) < 30):
             Colour.print('---------Failed Test Case----------',Colour.YELLOW)
             print(failed_test)
@@ -161,7 +166,7 @@ class Code_tester:
         os.system('rm .*.tester') # tester files clean
 
     @staticmethod
-    def get_ouput(file_path):
+    def get_output(file_path):
         with open(file_path) as out_handler:
             output = out_handler.read().strip().split('\n')
             output = '\n'.join(
@@ -170,18 +175,19 @@ class Code_tester:
 
     def compile_code(self,code):
         base,ext = code.split('\\')[-1].split('/')[-1].split('.')
+        binary = '.'+'-'.join(relative_path(code).split('/')[1:])+'.tester'
 
-
-        if self.os == 'windows':
+        if os_name == 'windows':
             if not ext in ['c', 'cpp', 'java', 'py', 'rb','exe']:
                 Colour.print('Supports only C, C++, Python, Java, Ruby and cpp-binary as of now.',Colour.RED)
                 sys.exit(1)
+
             compiler = {
                 'py': None,
                 'rb': None,
                 'exe': None,
-                'c': 'gcc -DONLINE_JUDGE -o .' + base + '.tester',
-                'cpp': 'g++ -DONLINE_JUDGE -std=c++14 -o .' + base + '.tester',
+                'c': 'gcc -DONLINE_JUDGE -o ' + binary,
+                'cpp': 'g++ -DONLINE_JUDGE -std=c++14 -o ' + binary,
                 'java': 'javac -d .'
             }[ext]
 
@@ -197,12 +203,12 @@ class Code_tester:
                 'py': 'python "' + code + '"',
                 'rb': 'ruby "' + code + '"',
                 'exe': code,
-                'c': '.' + base + '.tester',
-                'cpp': '.' + base + '.tester',
+                'c': binary,
+                'cpp': binary,
                 'java': 'java -DONLINE_JUDGE=true -Duser.language=en -Duser.region=US -Duser.variant=US ' + base
             }[ext]
 
-        else:
+        else: # Not windows
             if not ext in ['c', 'cpp', 'java', 'py', 'rb', 'out']:
                 Colour.print('Supports only C, C++, Python, Java, Ruby and cpp-binary as of now.',Colour.RED)
                 sys.exit(1)
@@ -210,8 +216,8 @@ class Code_tester:
                 'py': None,
                 'rb': None,
                 'out': None,
-                'c': 'gcc -static -DONLINE_JUDGE -g -fno-asm -lm -s -O2 -o .' + base + '.tester',
-                'cpp': 'g++ -static -DONLINE_JUDGE -g -lm -s -x c++ -O2 -std=c++14 -o .' + base + '.tester',
+                'c': 'gcc -static -DONLINE_JUDGE -g -fno-asm -lm -s -O2 -o ' + binary,
+                'cpp': 'g++ -static -DONLINE_JUDGE -g -lm -s -x c++ -O2 -std=c++14 -o ' + binary,
                 'java': 'javac -d .'
             }[ext]
 
@@ -227,8 +233,8 @@ class Code_tester:
                 'py': 'python3 \'' + code + '\'',
                 'rb': 'ruby \'' + code + '\'',
                 'out': './' + code,
-                'c': './.' + base + '.tester',
-                'cpp': './.' + base + '.tester',
+                'c': './' + binary,
+                'cpp': './' + binary,
                 'java': 'java -DONLINE_JUDGE=true -Duser.language=en -Duser.region=US -Duser.variant=US ' + base
             }[ext]
 

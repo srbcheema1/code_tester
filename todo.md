@@ -2,4 +2,3 @@
 - verifier script option
 - add library for test_case generators
 - test with a given test-case
-- same name files give same binaries even if different locations are used
