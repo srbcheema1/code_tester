@@ -29,3 +29,14 @@ script:
   - ls -d .?*
   - code_tester -c
   - ls -d .?*
+
+
+#deploy:
+  #provider: pypi
+  #user: srbcheema1
+  #on:
+    #tags: true
+  #distributions: "sdist bdist_wheel"
+  #skip_existing: true
+  #password:
+    #secure: "qOmByDRUd0vDSbSquRZMwMt58m4+HRxSVWQSelMoMnoRaRjnmUv91C6dwAIJFsQvbJSfc3LZ8FKBWTN9KnUYVtXJg7eQ2B69Iax1auqdhvyyJawAoAzNROfL02a/OWVgrlNMI5fZkYFblDh2E2etXmgRODzY58h97Bu7VxP/VTSK6hh3SMDqgWBNWb469vBU1hzKoPnkmrqjCcdzKLsjq2TUdEzNTfLg36IJEYObvXTL6j9nGW77T0kMLE1dt09mAMN3iChBO56dwR/VL9uYSCuyU0pDSHv+N60bl0/UdBW+eArzehrbjUOSUJwvTvZ9gAYKS1GyftNSlZijN7kvAdMq/9ld8mBXTbhpGLtA/UOQg/tjfcHjwqNfjAmCQJJk9XDWu0VlBw6FXEmuqK+/U6LnY5H/w8b0fI57BxbuLYBu8UvM975dyPBCAfd6lT0dEldoYgFROIH2eehh2nzNdLmBOqPwwyI5T/SVeL/BuqsdV3UIrpUALYspXsh/+mt9HjyOHvXTqYtfI9CcKdGwHtaJJUklh+Sr4XJnRkxguE77M+BCoJfJpOue0X9cadF4TmZWgeh1Mt3982ITfUc/4ZW5FWju8I/jNg87BWWXQNzAu9MMhrCq+LPMD5A6rbYoa6rTgdAS+iMMzb7SiW7ltcFV3cucmOFVRVLCSURjxWY="
