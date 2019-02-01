@@ -138,8 +138,10 @@ class Code_tester:
 
     def print_outputs(self,output1,output2,ret):
         printed_output = False
+        code1 = relative_path(self.code1)
+        code2 = relative_path(self.code2)
         if(len(output1.split('\n')) < 30 and len(output2.split('\n')) < 30):
-            table_data = [['#',self.code1, self.code2]]
+            table_data = [['#',code1, code2]]
             output1 = output1.split('\n')
             output2 = output2.split('\n')
             l1 = len(output1)
